@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 COPY ./uv.lock .
+COPY ./pyproject.toml .
 RUN uv sync --frozen
 
-COPY . .
 
 # CMD ["uv", "run", "my_app"]
