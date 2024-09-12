@@ -5,7 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aerich>=0.7.2",
+    "asyncpg>=0.29.0",
     "fastapi[standard]>=0.114.1",
     "pydantic-settings>=2.5.2",
+    "ruff>=0.6.4",
+    "tortoise-orm>=0.21.6",
     "uvicorn>=0.30.6",
 ]
+
+[tool.aerich]
+tortoise_orm = "app.db.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
