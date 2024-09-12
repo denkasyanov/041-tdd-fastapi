@@ -31,3 +31,9 @@ docker compose exec server uv run pytest
 ```shell
 uv run ruff check --select I --fix
 ```
+
+#### Access postgres shell
+
+```shell
+docker compose exec server-db psql -U postgres -d server_dev
+```
