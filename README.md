@@ -37,3 +37,9 @@ uv run ruff check --select I --fix
 ```shell
 docker compose exec server-db psql -U postgres -d server_dev
 ```
+
+#### Access Tortoise shell
+
+```shell
+docker compose exec server uv run tortoise-cli shell
+```

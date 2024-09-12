@@ -3,10 +3,10 @@ import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from starlette.types import Lifespan
 from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.api import ping, summaries
-from starlette.types import Lifespan
 
 
 log = logging.getLogger("uvicorn")

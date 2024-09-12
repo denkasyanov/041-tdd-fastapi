@@ -1,14 +1,13 @@
-from contextlib import asynccontextmanager
 import os
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.config import Settings, get_settings
 from app.main import create_app
-
-from tortoise.contrib.fastapi import RegisterTortoise
 
 
 def get_settings_override():
