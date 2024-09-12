@@ -3,8 +3,8 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 
-from app import main
 from app.config import Settings, get_settings
+from app.main import create_app
 
 
 def get_settings_override():
@@ -14,9 +14,10 @@ def get_settings_override():
 @pytest.fixture(scope="module")
 def test_app():
     # set up
-    main.app.dependency_overrides[get_settings] = get_settings_override
+    app = create_app()
+    app.dependency_overrides[get_settings] = get_settings_override
 
-    with TestClient(main.app) as test_client:
+    with TestClient(app) as test_client:
         # testing
         yield test_client
 
