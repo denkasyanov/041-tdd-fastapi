@@ -13,5 +13,4 @@ async def post(payload: SummaryPayloadSchema) -> int:
 
 async def get(id: int) -> dict | None:
     summary = await TextSummary.filter(id=id).first().values()
-
     return summary

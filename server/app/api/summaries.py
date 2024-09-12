@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.api import crud
 from app.models.pydantic import SummaryPayloadSchema, SummaryResponseSchema
@@ -20,8 +20,9 @@ async def create_summary(payload: SummaryPayloadSchema) -> SummaryResponseSchema
     return response_object
 
 
-@router.get("/{id}", response_model=SummarySchema)
+@router.get("/{id}/", response_model=SummarySchema)
 async def read_summary(id: int) -> SummarySchema:
     summary = await crud.get(id)
-
+    if not summary:
+        raise HTTPException(status_code=404, detail="Summary not found")
     return summary
