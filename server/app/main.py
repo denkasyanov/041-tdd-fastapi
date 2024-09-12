@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.api import ping, summaries
+from starlette.types import Lifespan
 
 
 log = logging.getLogger("uvicorn")
@@ -23,11 +24,11 @@ async def lifespan(app: FastAPI):
         yield
 
 
-def create_app() -> FastAPI:
+def create_app(lifespan: Lifespan = lifespan) -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     app.include_router(ping.router)
     app.include_router(summaries.router, prefix="/summaries", tags=["summaries"])
     return app
 
 
-app = create_app()
+app = create_app(lifespan)
