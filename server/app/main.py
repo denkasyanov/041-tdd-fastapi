@@ -1,10 +1,9 @@
 import os
+
 from fastapi import Depends, FastAPI
-
-from app.config import Settings, get_settings
-
 from tortoise.contrib.fastapi import register_tortoise
 
+from app.config import Settings, get_settings
 
 app = FastAPI()
 
