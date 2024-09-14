@@ -18,7 +18,6 @@ def get_db_config() -> dict:
     result = {
         "engine": "tortoise.backends.asyncpg",  # TODO assume postgres
         "credentials": {
-            # "scheme": parsed_url.scheme,
             "user": parsed_url.username,
             "password": parsed_url.password,
             "host": parsed_url.hostname,
