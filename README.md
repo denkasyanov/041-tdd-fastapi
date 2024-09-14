@@ -57,7 +57,7 @@ fly deploy server
 ```
 
 > [!NOTE]
-> `server` is the name of directory with target `fly.toml`
+> `server` is the name of directory with the target `fly.toml`
 
 #### Connect to production app and run migrations
 
