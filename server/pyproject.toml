@@ -37,5 +37,5 @@ filterwarnings = ["ignore::DeprecationWarning"]
 lines-after-imports = 2
 
 [tool.coverage.run]
-omit = "tests/*"
+omit = ["tests/*"]
 branch = true
