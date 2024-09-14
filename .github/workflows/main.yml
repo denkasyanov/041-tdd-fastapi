@@ -81,8 +81,8 @@ jobs:
             --name fastapi-tdd \
             -e PORT=8765 \
             -e ENVIRONMENT=dev \
-            -e DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres \
-            -e DATABASE_TEST_URL=postgres://postgres:postgres@postgres:5432/postgres \
+            -e DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres \
+            -e DATABASE_TEST_URL=postgres://postgres:postgres@localhost:5432/postgres \
             -p 5003:8765 \
             ${{ env.IMAGE }}:latest
       - name: Lint
