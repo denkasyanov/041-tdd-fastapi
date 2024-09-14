@@ -71,11 +71,11 @@ jobs:
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
             ${{ env.IMAGE }}:latest
+      - name: Lint
+        run: docker exec fastapi-tdd uv run ruff check .
+      - name: Format
+        run: docker exec fastapi-tdd uv run ruff format .
+      - name: Sort imports
+        run: docker exec fastapi-tdd uv run ruff check --select I
       - name: Pytest
-        run: docker exec fastapi-tdd python -m pytest .
-      - name: Flake8
-        run: docker exec fastapi-tdd python -m flake8 .
-      - name: Black
-        run: docker exec fastapi-tdd python -m black . --check
-      - name: isort
-        run: docker exec fastapi-tdd python -m isort . --check-only
+        run: docker exec fastapi-tdd uv run pytest .
