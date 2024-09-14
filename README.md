@@ -72,3 +72,7 @@ fly ssh console -a tdd-fastapi -C "uv run aerich upgrade"
 ```shell
 fly postgres connect -a tdd-fastapi-db
 ```
+
+## Stretch goals
+
+- [ ] Add a system for tagging images
