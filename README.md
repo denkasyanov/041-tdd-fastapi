@@ -1,5 +1,7 @@
 # Text Summarization service
 
+![Continuous Integration and Delivery](https://github.com/denkasyanov/041-tdd-fastapi/workflows/Continuous%20Integration%20and%20Delivery/badge.svg?branch=main)
+
 **TDD · FastAPI · Docker** course project
 
 ## Usage
