@@ -62,13 +62,7 @@ fly deploy server
 #### Connect to production app and run migrations
 
 ```shell
-fly postgres connect -a tdd-fastapi
-```
-
-On server:
-
-```shell
-uv run aerich upgrade
+fly ssh console -a tdd-fastapi -C "uv run aerich upgrade"
 ```
 
 #### Connect to production database
