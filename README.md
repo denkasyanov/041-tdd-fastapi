@@ -6,7 +6,7 @@
 
 This project assumes that [`uv`](https://docs.astral.sh/uv/) is installed.
 
-### Local development
+### Local environment
 
 #### Start the server
 
@@ -42,4 +42,24 @@ docker compose exec server-db psql -U postgres -d server_dev
 
 ```shell
 docker compose exec server uv run tortoise-cli shell
+```
+
+### Production environment
+
+#### Connect to production app and run migrations
+
+```shell
+fly postgres connect -a tdd-fastapi-db
+```
+
+On server:
+
+```shell
+uv run aerich upgrade
+```
+
+#### Connect to production database
+
+```shell
+fly postgres connect -a tdd-fastapi-db
 ```
