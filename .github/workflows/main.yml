@@ -38,67 +38,67 @@ jobs:
         run: |
           docker push ${{ env.IMAGE }}:latest
 
-  # test:
-  #   name: Test Docker Image
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     postgres:
-  #       image: postgres:16
-  #       env:
-  #         POSTGRES_USER: postgres
-  #         POSTGRES_PASSWORD: postgres
-  #         POSTGRES_DB: postgres
-  #       ports:
-  #         - 5432:5432
-  #       options: >-
-  #         --health-cmd pg_isready
-  #         --health-interval 10s
-  #         --health-timeout 5s
-  #         --health-retries 5
-  #   needs: build
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: main
-  #     - name: Log in to GitHub Packages
-  #       run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: Pull image
-  #       run: |
-  #         docker pull ${{ env.IMAGE }}:latest || true
-  #     - name: Build image
-  #       run: |
-  #         docker build \
-  #           --cache-from ${{ env.IMAGE }}:latest \
-  #           --tag ${{ env.IMAGE }}:latest \
-  #           --file ./server/Dockerfile.prod \
-  #           "./server"
-  #     - name: Run container
-  #       run: |
-  #         docker run \
-  #           -d \
-  #           --name fastapi-tdd \
-  #           -e PORT=8765 \
-  #           -e ENVIRONMENT=dev \
-  #           --network ${{ job.container.network }} \
-  #           -e DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres \
-  #           -e DATABASE_TEST_URL=postgres://postgres:postgres@postgres:5432/postgres \
-  #           -p 5003:8765 \
-  #           ${{ env.IMAGE }}:latest
-  #     - name: Lint
-  #       run: docker exec fastapi-tdd uv run ruff check .
-  #     - name: Format
-  #       run: docker exec fastapi-tdd uv run ruff format .
-  #     - name: Sort imports
-  #       run: docker exec fastapi-tdd uv run ruff check --select I
-  #     - name: Pytest
-  #       run: docker exec fastapi-tdd uv run pytest .
+  test:
+    name: Test Docker Image
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Log in to GitHub Packages
+        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull image
+        run: |
+          docker pull ${{ env.IMAGE }}:latest || true
+      - name: Build image
+        run: |
+          docker build \
+            --cache-from ${{ env.IMAGE }}:latest \
+            --tag ${{ env.IMAGE }}:latest \
+            --file ./server/Dockerfile.prod \
+            "./server"
+      - name: Run container
+        run: |
+          docker run \
+            -d \
+            --name fastapi-tdd \
+            -e PORT=8765 \
+            -e ENVIRONMENT=dev \
+            --network ${{ job.container.network }} \
+            -e DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres \
+            -e DATABASE_TEST_URL=postgres://postgres:postgres@postgres:5432/postgres \
+            -p 5003:8765 \
+            ${{ env.IMAGE }}:latest
+      - name: Lint
+        run: docker exec fastapi-tdd uv run ruff check .
+      - name: Format
+        run: docker exec fastapi-tdd uv run ruff format .
+      - name: Sort imports
+        run: docker exec fastapi-tdd uv run ruff check --select I
+      - name: Pytest
+        run: docker exec fastapi-tdd uv run pytest .
 
   deploy:
     name: Deploy to Fly.io
-    # needs: test
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
