@@ -1,5 +1,4 @@
 import logging
-import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +6,7 @@ from starlette.types import Lifespan
 from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.api import ping, summaries
+from app.db import TORTOISE_ORM
 
 
 log = logging.getLogger("uvicorn")
@@ -16,8 +16,9 @@ log = logging.getLogger("uvicorn")
 async def lifespan(app: FastAPI):
     async with RegisterTortoise(
         app=app,
-        db_url=os.environ.get("DATABASE_URL"),
-        modules={"models": ["app.models.tortoise"]},
+        # db_url=os.environ.get("DATABASE_URL"),
+        # modules={"models": ["app.models.tortoise"]},
+        config=TORTOISE_ORM,
         generate_schemas=False,
         add_exception_handlers=True,
     ):

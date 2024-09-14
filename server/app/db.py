@@ -1,15 +1,43 @@
 import logging
 import os
-
-from tortoise import Tortoise, run_async
+from urllib.parse import parse_qs, urlparse
 
 
 log = logging.getLogger("uvicorn")
 
 
+# Fly uses sslmode=disable which Tortoise doesn't like
+# So we'll parse the DATABASE_URL and process sslmode manually
+
+
+def get_db_config() -> dict:
+    database_url = os.environ.get("DATABASE_URL")
+
+    parsed_url = urlparse(database_url)
+
+    result = {
+        "engine": "tortoise.backends.asyncpg",  # TODO assume postgres
+        "credentials": {
+            # "scheme": parsed_url.scheme,
+            "user": parsed_url.username,
+            "password": parsed_url.password,
+            "host": parsed_url.hostname,
+            "port": parsed_url.port,
+            "database": parsed_url.path.lstrip("/"),
+        },
+    }
+
+    query_params = parse_qs(parsed_url.query)
+    for key, value in query_params.items():
+        if key == "sslmode" and value[0] == "disable":
+            result["credentials"]["ssl"] = False
+
+    return result
+
+
 TORTOISE_ORM = {
     "connections": {
-        "default": os.environ.get("DATABASE_URL"),
+        "default": get_db_config(),
     },
     "apps": {
         "models": {
@@ -18,20 +46,3 @@ TORTOISE_ORM = {
         }
     },
 }
-
-
-async def generate_schema() -> None:
-    log.info("Initializing Tortoise...")
-    await Tortoise.init(
-        db_url=os.environ.get("DATABASE_URL"),
-        modules={
-            "models": ["models.tortoise"]
-        },  # without `app` because we run it from the file inside the `app` directory
-    )
-    log.info("Generating database schema via Tortoise...")
-    await Tortoise.generate_schemas()
-    await Tortoise.close_connections()
-
-
-if __name__ == "__main__":
-    run_async(generate_schema())
