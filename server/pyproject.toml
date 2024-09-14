@@ -17,6 +17,7 @@ dependencies = [
     "uvicorn[standard]>=0.30.6",
 ]
 
+
 [tool.uv]
 dev-dependencies = [
     "ipython>=8.27.0",
@@ -25,16 +26,22 @@ dev-dependencies = [
     "tortoise-cli>=0.1.2",
 ]
 
+
 [tool.aerich]
 tortoise_orm = "app.db.TORTOISE_ORM"
 location = "./migrations"
 src_folder = "./."
 
-[tool.pytest.ini_options]
-filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
+
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.coverage.run]
 omit = ["tests/*"]

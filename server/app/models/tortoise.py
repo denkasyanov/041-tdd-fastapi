@@ -1,6 +1,3 @@
-from typing import Type
-
-from pydantic import BaseModel
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
