@@ -4,9 +4,11 @@
 
 ## Usage
 
-This project assumes that [`uv`](https://docs.astral.sh/uv/) is installed.
+All commands are run from the root of the project.
 
 ### Local environment
+
+This project assumes that [`uv`](https://docs.astral.sh/uv/) is installed locally.
 
 #### Start the server
 
@@ -46,10 +48,21 @@ docker compose exec server uv run tortoise-cli shell
 
 ### Production environment
 
+This projects assumes that project was deployed with Fly database app `tdd-fastapi-db`.
+
+### Deploy
+
+```shell
+fly deploy server
+```
+
+> [!NOTE]
+> `server` is the name of directory with target `fly.toml`
+
 #### Connect to production app and run migrations
 
 ```shell
-fly postgres connect -a tdd-fastapi-db
+fly postgres connect -a tdd-fastapi
 ```
 
 On server:
