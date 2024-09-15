@@ -4,17 +4,17 @@ COMPOSE_FILE = compose.yaml
 COMPOSE_PROD_FILE = compose.prod.yaml
 
 
-# Docker in development environment
+## > Docker in development environment
 
-## dev - Starts the development environment in attached mode
+## dev - Start the development environment in attached mode
 dev:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up --build
 
-## devd - Starts the development environment in detached mode
+## devd - Start the development environment in detached mode
 devd:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
 
-## stop
+## stop - Stop the development environment
 stop:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) stop
 
@@ -23,22 +23,24 @@ logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
 
 .PHONY: dev devd stop logs
+##
 
 
-# Docker for testing "production" environment
+## > Docker for testing "production" environment
 
-## prod - Starts the production environment in attached mode
+## prod - Start the production environment in attached mode
 prod:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up --build
 
-## prodd - Starts the production environment in detached mode
+## prodd - Start the production environment in detached mode
 prodd:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up -d --build
 
 .PHONY: prod prodd
+##
 
 
-# Checks
+## > Checks
 
 ## format - Run formatting
 format:
@@ -56,9 +58,10 @@ sort:
 check: lint format sort
 
 .PHONY: format lint sort check
+##
 
 
-# Tests
+## > Tests
 
 ## test - Run tests
 test:
@@ -72,7 +75,11 @@ testl:
 testv:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv
 
-.PHONY: test testl testv
+## cov - Run tests with coverage
+cov:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest --cov "."
+
+.PHONY: test testl testv cov
 
 
 .PHONY: help
