@@ -64,11 +64,15 @@ check: lint format sort
 test:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest
 
+## testl - Run ONE of the last failed tests with verbose output and disabled ouptutcapture
+testl:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv --lf -x
+
 ## testv - Run tests with verbose output and disabled ouptutcapture
 testv:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv
 
-.PHONY: test testv
+.PHONY: test testl testv
 
 
 .PHONY: help

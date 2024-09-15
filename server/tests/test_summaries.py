@@ -116,6 +116,20 @@ def test_delete_summary_incorrect_id(test_app_with_db):
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
+    response = test_app_with_db.delete("/summaries/0/")
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "ctx": {"gt": 0},
+                "input": "0",
+                "loc": ["path", "id"],
+                "msg": "Input should be greater than 0",
+                "type": "greater_than",
+            },
+        ]
+    }
+
 
 # Put summary
 
@@ -140,7 +154,22 @@ def test_update_summary_incorrect_id(test_app_with_db):
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
+    response = test_app_with_db.put("/summaries/0/", json={"url": "https://foo.bar", "summary": "updated!"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "ctx": {"gt": 0},
+                "input": "0",
+                "loc": ["path", "id"],
+                "msg": "Input should be greater than 0",
+                "type": "greater_than",
+            },
+        ]
+    }
 
+
+# Originally called "test_update_summary_invalid_keys" (for reference with the tutorial)
 def test_update_summary_with_invalid_json(test_app_with_db):
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
@@ -161,6 +190,20 @@ def test_update_summary_with_invalid_json(test_app_with_db):
                 "loc": ["body", "summary"],
                 "msg": "Field required",
                 "type": "missing",
+            },
+        ]
+    }
+
+    response = test_app_with_db.put(f"/summaries/{summary_id}/", json={"url": "invalid://url", "summary": "updated!"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "ctx": {"expected_schemes": "'http' or 'https'"},
+                "input": "invalid://url",
+                "loc": ["body", "url"],
+                "msg": "URL scheme should be 'http' or 'https'",
+                "type": "url_scheme",
             },
         ]
     }
