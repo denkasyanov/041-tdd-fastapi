@@ -1,7 +1,7 @@
 FROM python:3.12.4-slim-bookworm
 
 # Set up uv
-COPY --from=ghcr.io/astral-sh/uv:0.4.9 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.4.10 /uv /bin/uv
 
 WORKDIR /usr/src/app
 

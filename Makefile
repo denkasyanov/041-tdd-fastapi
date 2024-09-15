@@ -65,7 +65,7 @@ check: lint format sort
 
 ## test - Run tests
 test:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -n auto
 
 ## testl - Run ONE of the last failed tests with verbose output and disabled ouptutcapture
 testl:
@@ -73,7 +73,7 @@ testl:
 
 ## testv - Run tests with verbose output and disabled ouptutcapture
 testv:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv -n auto
 
 ## cov - Run tests with coverage
 cov:
