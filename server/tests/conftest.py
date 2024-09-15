@@ -48,3 +48,11 @@ def test_app_with_db():
     with TestClient(app) as test_client:
         # testing
         yield test_client
+
+
+# Courtesy of https://github.com/pytest-dev/pytest/issues/7568#issuecomment-1217328487
+def dict_parametrize(data, **kwargs):
+    args = list(list(data.values())[0].keys())
+    formatted_data = [[item[a] for a in args] for item in data.values()]
+    ids = list(data.keys())
+    return pytest.mark.parametrize(args, formatted_data, ids=ids, **kwargs)

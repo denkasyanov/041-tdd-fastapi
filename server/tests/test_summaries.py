@@ -1,7 +1,7 @@
 # Create summary
 
 
-from conftest import dict_parametrize
+from .conftest import dict_parametrize
 
 
 def test_create_summary(test_app_with_db):
