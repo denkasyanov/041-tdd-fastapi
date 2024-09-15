@@ -1,6 +1,9 @@
 # Create summary
 
 
+import pytest
+
+
 def test_create_summary(test_app_with_db):
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
 
@@ -148,83 +151,74 @@ def test_update_summary(test_app_with_db):
     assert response_dict["created_at"]
 
 
-def test_update_summary_incorrect_id(test_app_with_db):
-    response = test_app_with_db.put("/summaries/9999999/", json={"url": "https://foo.bar", "summary": "updated!"})
-
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Summary not found"
-
-    response = test_app_with_db.put("/summaries/0/", json={"url": "https://foo.bar", "summary": "updated!"})
-    assert response.status_code == 422
-    assert response.json() == {
-        "detail": [
+@pytest.mark.parametrize(
+    "summary_id, payload, status_code, detail",
+    [
+        [9999999, {"url": "https://foo.bar", "summary": "updated!"}, 404, {"detail": "Summary not found"}],
+        [
+            0,
+            {"url": "https://foo.bar", "summary": "updated!"},
+            422,
             {
-                "ctx": {"gt": 0},
-                "input": "0",
-                "loc": ["path", "id"],
-                "msg": "Input should be greater than 0",
-                "type": "greater_than",
+                "detail": [
+                    {
+                        "ctx": {"gt": 0},
+                        "input": "0",
+                        "loc": ["path", "id"],
+                        "msg": "Input should be greater than 0",
+                        "type": "greater_than",
+                    }
+                ]
             },
-        ]
-    }
-
-
-# Originally called "test_update_summary_invalid_keys" (for reference with the tutorial)
-def test_update_summary_with_invalid_json(test_app_with_db):
-    response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
-    summary_id = response.json()["id"]
-
-    response = test_app_with_db.put(f"/summaries/{summary_id}/", json={})
-    assert response.status_code == 422
-
-    assert response.json() == {
-        "detail": [
+        ],
+        [
+            1,
+            {},
+            422,
             {
-                "input": {},
-                "loc": ["body", "url"],
-                "msg": "Field required",
-                "type": "missing",
+                "detail": [
+                    {"input": {}, "loc": ["body", "url"], "msg": "Field required", "type": "missing"},
+                    {"input": {}, "loc": ["body", "summary"], "msg": "Field required", "type": "missing"},
+                ]
             },
+        ],
+        [
+            1,
+            {"url": "https://foo.bar"},
+            422,
             {
-                "input": {},
-                "loc": ["body", "summary"],
-                "msg": "Field required",
-                "type": "missing",
+                "detail": [
+                    {
+                        "input": {"url": "https://foo.bar"},
+                        "loc": ["body", "summary"],
+                        "msg": "Field required",
+                        "type": "missing",
+                    }
+                ]
             },
-        ]
-    }
-
-    response = test_app_with_db.put(f"/summaries/{summary_id}/", json={"url": "invalid://url", "summary": "updated!"})
-    assert response.status_code == 422
-    assert response.json() == {
-        "detail": [
+        ],
+        [
+            1,
+            {"url": "invalid://url", "summary": "updated!"},
+            422,
             {
-                "ctx": {"expected_schemes": "'http' or 'https'"},
-                "input": "invalid://url",
-                "loc": ["body", "url"],
-                "msg": "URL scheme should be 'http' or 'https'",
-                "type": "url_scheme",
+                "detail": [
+                    {
+                        "ctx": {
+                            "expected_schemes": "'http' or 'https'",
+                        },
+                        "input": "invalid://url",
+                        "loc": ["body", "url"],
+                        "msg": "URL scheme should be 'http' or 'https'",
+                        "type": "url_scheme",
+                    }
+                ]
             },
-        ]
-    }
-
-
-def test_update_summary_with_incomplete_json(test_app_with_db):
-    response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
-    summary_id = response.json()["id"]
-
-    response = test_app_with_db.put(f"/summaries/{summary_id}/", json={"url": "https://foo.bar"})
-    assert response.status_code == 422
-
-    assert response.json() == {
-        "detail": [
-            {
-                "input": {
-                    "url": "https://foo.bar",
-                },
-                "loc": ["body", "summary"],
-                "msg": "Field required",
-                "type": "missing",
-            },
-        ]
-    }
+        ],
+    ],
+    ids=["non_existent_summary_id", "invalid_summary_id", "empty_payload", "imcomplete_payload", "invalid_url"],
+)
+def test_update_summary_invalid(test_app_with_db, summary_id, payload, status_code, detail):
+    response = test_app_with_db.put(f"/summaries/{summary_id}/", json=payload)
+    assert response.status_code == status_code
+    assert response.json() == detail
