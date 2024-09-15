@@ -17,7 +17,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
       - name: Log in to GitHub Packages
@@ -95,6 +95,9 @@ jobs:
         run: docker exec fastapi-tdd uv run ruff check --select I
       - name: Pytest
         run: docker exec fastapi-tdd uv run pytest .
+
+      - name: Stop docker container to avoid network warning
+        run: docker stop fastapi-tdd
 
   deploy:
     name: Deploy to Fly.io
