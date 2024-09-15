@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import AnyHttpUrl, BaseModel
 
 
 class Summary(BaseModel):
@@ -6,7 +6,7 @@ class Summary(BaseModel):
 
 
 class SummaryPayloadSchema(BaseModel):
-    url: str
+    url: AnyHttpUrl
 
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):

@@ -15,7 +15,7 @@ This project assumes that [`uv`](https://docs.astral.sh/uv/) is installed locall
 #### Start the server
 
 ```shell
-docker compose up --build
+make dev
 ```
 
 #### Run migrations locally
@@ -26,14 +26,42 @@ docker compose exec server uv run aerich upgrade
 
 #### Run tests
 
+Basic run
+
 ```shell
-docker compose exec server uv run pytest
+make test
 ```
 
-#### Organize imports with Ruff
+Test run with **verbose** output and disabled output capture
 
 ```shell
-uv run ruff check --select I --fix
+make testv
+```
+
+#### Run all checks and formatting
+
+```shell
+make check
+```
+
+#### Run individual checks/formatting
+
+Format with Ruff
+
+```shell
+make format
+```
+
+Lint with Ruff
+
+```shell
+make lint
+```
+
+Sort imports
+
+```shell
+make sort
 ```
 
 #### Access postgres shell
@@ -78,6 +106,8 @@ fly postgres connect -a tdd-fastapi-db
 - [X] Use `uv` instead of `pip`
 - [X] Don't pin dependencies
 - [X] Use `lifespan` in Tortoise ORM instead of lifecycle event handlers
+- [X] Replace long commands with `make` shortcuts
+- [ ] Make table with shortcut and full command in README
 - [ ] Add a system for tagging images
 - [ ] Test CD from a private registry
 - [ ] Clear test database after each test run

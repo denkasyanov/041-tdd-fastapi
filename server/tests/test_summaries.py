@@ -5,14 +5,13 @@ def test_create_summary(test_app_with_db):
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
 
     assert response.status_code == 201
-    assert response.json()["url"] == "https://foo.bar"
+    assert response.json()["url"] == "https://foo.bar/"
 
 
 def test_create_summary_with_invalid_json(test_app_with_db):
     response = test_app_with_db.post("/summaries/", json={})
 
     assert response.status_code == 422
-
     assert response.json() == {
         "detail": [
             {
@@ -20,6 +19,20 @@ def test_create_summary_with_invalid_json(test_app_with_db):
                 "loc": ["body", "url"],
                 "msg": "Field required",
                 "type": "missing",
+            }
+        ]
+    }
+
+    response = test_app_with_db.post("/summaries/", json={"url": "invalid://url"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "ctx": {"expected_schemes": "'http' or 'https'"},
+                "input": "invalid://url",
+                "loc": ["body", "url"],
+                "msg": "URL scheme should be 'http' or 'https'",
+                "type": "url_scheme",
             }
         ]
     }
@@ -39,7 +52,7 @@ def test_read_summary(test_app_with_db):
     response_dict = response.json()
 
     assert response_dict["id"] == summary_id
-    assert response_dict["url"] == "https://foo.bar"
+    assert response_dict["url"] == "https://foo.bar/"
     assert response_dict["summary"]
     assert response_dict["created_at"]
 
@@ -116,7 +129,7 @@ def test_update_summary(test_app_with_db):
 
     response_dict = response.json()
     assert response_dict["id"] == summary_id
-    assert response_dict["url"] == "https://foo.bar"
+    assert response_dict["url"] == "https://foo.bar/"
     assert response_dict["summary"] == "updated!"
     assert response_dict["created_at"]
 
