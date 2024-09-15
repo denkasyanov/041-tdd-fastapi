@@ -1,7 +1,7 @@
 # Create summary
 
 
-import pytest
+from conftest import dict_parametrize
 
 
 def test_create_summary(test_app_with_db):
@@ -151,15 +151,19 @@ def test_update_summary(test_app_with_db):
     assert response_dict["created_at"]
 
 
-@pytest.mark.parametrize(
-    "summary_id, payload, status_code, detail",
-    [
-        [9999999, {"url": "https://foo.bar", "summary": "updated!"}, 404, {"detail": "Summary not found"}],
-        [
-            0,
-            {"url": "https://foo.bar", "summary": "updated!"},
-            422,
-            {
+@dict_parametrize(
+    {
+        "non_existent_summary_id": {
+            "summary_id": 9999999,
+            "payload": {"url": "https://foo.bar", "summary": "updated!"},
+            "status_code": 404,
+            "response_json": {"detail": "Summary not found"},
+        },
+        "invalid_summary_id": {
+            "summary_id": 0,
+            "payload": {"url": "https://foo.bar", "summary": "updated!"},
+            "status_code": 422,
+            "response_json": {
                 "detail": [
                     {
                         "ctx": {"gt": 0},
@@ -170,23 +174,23 @@ def test_update_summary(test_app_with_db):
                     }
                 ]
             },
-        ],
-        [
-            1,
-            {},
-            422,
-            {
+        },
+        "empty_payload": {
+            "summary_id": 1,
+            "payload": {},
+            "status_code": 422,
+            "response_json": {
                 "detail": [
                     {"input": {}, "loc": ["body", "url"], "msg": "Field required", "type": "missing"},
                     {"input": {}, "loc": ["body", "summary"], "msg": "Field required", "type": "missing"},
                 ]
             },
-        ],
-        [
-            1,
-            {"url": "https://foo.bar"},
-            422,
-            {
+        },
+        "imcomplete_payload": {
+            "summary_id": 1,
+            "payload": {"url": "https://foo.bar"},
+            "status_code": 422,
+            "response_json": {
                 "detail": [
                     {
                         "input": {"url": "https://foo.bar"},
@@ -196,12 +200,12 @@ def test_update_summary(test_app_with_db):
                     }
                 ]
             },
-        ],
-        [
-            1,
-            {"url": "invalid://url", "summary": "updated!"},
-            422,
-            {
+        },
+        "invalid_url": {
+            "summary_id": 1,
+            "payload": {"url": "invalid://url", "summary": "updated!"},
+            "status_code": 422,
+            "response_json": {
                 "detail": [
                     {
                         "ctx": {
@@ -214,11 +218,10 @@ def test_update_summary(test_app_with_db):
                     }
                 ]
             },
-        ],
-    ],
-    ids=["non_existent_summary_id", "invalid_summary_id", "empty_payload", "imcomplete_payload", "invalid_url"],
+        },
+    }
 )
-def test_update_summary_invalid(test_app_with_db, summary_id, payload, status_code, detail):
+def test_update_summary_invalid(test_app_with_db, summary_id, payload, status_code, response_json):
     response = test_app_with_db.put(f"/summaries/{summary_id}/", json=payload)
     assert response.status_code == status_code
-    assert response.json() == detail
+    assert response.json() == response_json
