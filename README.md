@@ -113,3 +113,4 @@ fly postgres connect -a tdd-fastapi-db
 - [ ] Add a system for tagging images
 - [ ] Test CD from a private registry
 - [ ] Clear test database after each test run
+- [ ] Clear production database every hour
