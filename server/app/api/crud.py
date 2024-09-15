@@ -28,8 +28,7 @@ async def delete(id: int) -> None:
 
 async def put(id: int, payload: SummaryUpdatePayloadSchema) -> dict | None:
     summary = await TextSummary.filter(id=id).update(url=payload.url, summary=payload.summary)
-    print(f"{summary=}")
-    print("lol")
+
     if summary:
         updated_summary = await TextSummary.filter(id=id).first().values()
         return updated_summary

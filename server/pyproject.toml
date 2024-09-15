@@ -36,6 +36,18 @@ src_folder = "./."
 [tool.ruff]
 line-length = 120
 
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["E", "F", "T20"]
+ignore = []
+
+fixable = ["ALL"]
+unfixable = []
+
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 
