@@ -76,3 +76,4 @@ fly postgres connect -a tdd-fastapi-db
 ## Stretch goals
 
 - [ ] Add a system for tagging images
+- [ ] Test CD from a private registry

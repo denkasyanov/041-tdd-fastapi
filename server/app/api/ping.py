@@ -13,11 +13,3 @@ async def pong(settings: Settings = Depends(get_settings)):
         "environment": settings.environment,
         "testing": settings.testing,
     }
-
-@router.get("/lol/")
-async def kek(settings: Settings = Depends(get_settings)):
-    return {
-        "ping": "kek",
-        "environment": settings.environment,
-        "testing": settings.testing,
-    }

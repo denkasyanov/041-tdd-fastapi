@@ -22,19 +22,19 @@ logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
 
 
-## lint - Run linting
-lint:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run ruff check .
-
 ## format - Run formatting
 format:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run ruff format .
+
+## lint - Run linting
+lint:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run ruff check . --fix
 
 ## sort - Run sorting imports
 sort:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run ruff check --select I --fix
 
-## check - Run linting, formatting and sorting imports
+## check - Run formatting, linting and sorting imports
 check: lint format sort
 
 
@@ -58,4 +58,4 @@ prodd:
 help: Makefile
 	@sed -n 's/^##//p' $<
 
-.PHONY: dev devd stop logs lint format sort check test prod prodd help
+.PHONY: dev devd stop logs format lint sort check test prod prodd help

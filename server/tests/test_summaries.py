@@ -64,3 +64,28 @@ def test_list_summaries(test_app_with_db):
     response_list = response.json()
 
     assert any(summary["id"] == summary_id for summary in response_list)
+
+
+# Delete summary
+
+
+def test_delete_summary(test_app_with_db):
+    response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
+    summary_id = response.json()["id"]
+
+    response = test_app_with_db.get(f"/summaries/{summary_id}")
+    assert response.status_code == 200
+
+    response = test_app_with_db.delete(f"/summaries/{summary_id}")
+    assert response.status_code == 200
+    assert response.json()["id"] == summary_id
+
+    response = test_app_with_db.get(f"/summaries/{summary_id}")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Summary not found"
+
+
+def test_delete_summary_incorrect_id(test_app_with_db):
+    response = test_app_with_db.delete("/summaries/9999999/")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Summary not found"
