@@ -75,5 +75,9 @@ fly postgres connect -a tdd-fastapi-db
 
 ## Stretch goals
 
+- [X] Use `uv` instead of `pip`
+- [X] Don't pin dependencies
+- [X] Use `lifespan` in Tortoise ORM instead of lifecycle event handlers
 - [ ] Add a system for tagging images
 - [ ] Test CD from a private registry
+- [ ] Clear test database after each test run
