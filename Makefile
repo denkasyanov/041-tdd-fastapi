@@ -22,7 +22,12 @@ stop:
 logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
 
-.PHONY: dev devd stop logs
+
+## ipython - Open an ipython shell in the development environment
+ipython:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run ipython
+
+.PHONY: dev devd stop logs ipython
 ##
 
 

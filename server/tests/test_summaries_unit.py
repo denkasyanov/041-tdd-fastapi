@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from app.api import crud
+from app.api import crud, summaries
 from tests.conftest import dict_parametrize
 
 
@@ -15,6 +15,11 @@ def test_create_summary(test_app, monkeypatch):
         return 1
 
     monkeypatch.setattr(crud, "post", mock_post)
+
+    async def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app.post("/summaries/", json=test_request_payload)
     assert response.status_code == 201

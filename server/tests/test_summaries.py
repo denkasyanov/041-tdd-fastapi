@@ -1,10 +1,17 @@
 # Create summary
 
 
+from app.api import summaries
+
 from .conftest import dict_parametrize
 
 
-def test_create_summary(test_app_with_db):
+def test_create_summary(test_app_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
 
     assert response.status_code == 201
@@ -44,7 +51,12 @@ def test_create_summary_with_invalid_json(test_app_with_db):
 # Read summary
 
 
-def test_read_summary(test_app_with_db):
+def test_read_summary(test_app_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
 
     summary_id = response.json()["id"]
@@ -56,7 +68,7 @@ def test_read_summary(test_app_with_db):
 
     assert response_dict["id"] == summary_id
     assert response_dict["url"] == "https://foo.bar/"
-    assert response_dict["summary"]
+    assert response_dict["summary"] is not None
     assert response_dict["created_at"]
 
 
@@ -83,7 +95,12 @@ def test_read_summary_incorrect_id(test_app_with_db):
 # List summaries
 
 
-def test_list_summaries(test_app_with_db):
+def test_list_summaries(test_app_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 
@@ -98,7 +115,12 @@ def test_list_summaries(test_app_with_db):
 # Delete summary
 
 
-def test_delete_summary(test_app_with_db):
+def test_delete_summary(test_app_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 
@@ -137,7 +159,12 @@ def test_delete_summary_incorrect_id(test_app_with_db):
 # Put summary
 
 
-def test_update_summary(test_app_with_db):
+def test_update_summary(test_app_with_db, monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post("/summaries/", json={"url": "https://foo.bar"})
     summary_id = response.json()["id"]
 
