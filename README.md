@@ -107,6 +107,8 @@ fly postgres connect -a tdd-fastapi-db
 - [X] Don't pin dependencies
 - [X] Use `lifespan` in Tortoise ORM instead of lifecycle event handlers
 - [X] Replace long commands with `make` shortcuts
+- [ ] Make multistage Docker build (ideas: <https://hynek.me/articles/docker-uv/>)
+- [ ] Make use of Docker caching (ideas: <https://testdriven.io/blog/faster-ci-builds-with-docker-cache/>)
 - [ ] Make table with shortcut and full command in README
 - [ ] Add a system for tagging images
 - [ ] Test CD from a private registry
