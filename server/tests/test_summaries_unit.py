@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, timezone
 
-from app.api import crud, summaries
+from app.api import crud
 from tests.conftest import dict_parametrize
 
 
 some_tz = timezone(timedelta(hours=1))
 
 
-def test_create_summary(test_app, monkeypatch):
+def test_create_summary(monkeypatch, test_app, mock_generate_summary):
     test_request_payload = {"url": "https://foo.bar"}
     test_response_payload = {"id": 1, "url": "https://foo.bar/"}
 
@@ -15,11 +15,6 @@ def test_create_summary(test_app, monkeypatch):
         return 1
 
     monkeypatch.setattr(crud, "post", mock_post)
-
-    async def mock_generate_summary(summary_id, url):
-        return
-
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app.post("/summaries/", json=test_request_payload)
     assert response.status_code == 201
@@ -55,7 +50,7 @@ def test_create_summaries_invalid_json(test_app):
     }
 
 
-def test_read_summary(test_app, monkeypatch):
+def test_read_summary(monkeypatch, test_app):
     test_data = {
         "id": 1,
         "url": "https://foo.bar/",
@@ -85,7 +80,7 @@ def test_read_summary_incorrect_id(test_app, monkeypatch):
     assert response.json() == {"detail": "Summary not found"}
 
 
-def test_read_all_summaries(test_app, monkeypatch):
+def test_read_all_summaries(monkeypatch, test_app):
     test_data = [
         {
             "id": 1,
@@ -110,7 +105,7 @@ def test_read_all_summaries(test_app, monkeypatch):
     assert response.json() == test_data
 
 
-def test_remove_summary(test_app, monkeypatch):
+def test_remove_summary(monkeypatch, test_app):
     async def mock_get(id):
         return {
             "id": 1,
@@ -131,7 +126,7 @@ def test_remove_summary(test_app, monkeypatch):
     assert response.json() == {"id": 1, "url": "https://foo.bar/"}
 
 
-def test_remove_summary_incorrect_id(test_app, monkeypatch):
+def test_remove_summary_incorrect_id(monkeypatch, test_app):
     async def mock_get(id):
         return None
 
@@ -229,7 +224,7 @@ def test_update_summary(test_app, monkeypatch):
         },
     }
 )
-def test_update_summary_invalid(test_app, monkeypatch, summary_id, payload, status_code, response_json):
+def test_update_summary_invalid(monkeypatch, test_app, summary_id, payload, status_code, response_json):
     async def mock_put(id, payload):
         return None
 

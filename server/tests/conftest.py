@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from tortoise.contrib.fastapi import RegisterTortoise
 
+from app.api import summaries
 from app.config import Settings, get_settings
 from app.main import create_app
 
@@ -48,6 +49,15 @@ def test_app_with_db():
     with TestClient(app) as test_client:
         # testing
         yield test_client
+
+
+@pytest.fixture
+def mock_generate_summary(monkeypatch):
+    def _mock_generate_summary(summary_id, url):
+        return
+
+    monkeypatch.setattr(summaries, "generate_summary", _mock_generate_summary)
+    return _mock_generate_summary
 
 
 # Courtesy of https://github.com/pytest-dev/pytest/issues/7568#issuecomment-1217328487
