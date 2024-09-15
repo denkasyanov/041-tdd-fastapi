@@ -4,7 +4,8 @@ COMPOSE_FILE = compose.yaml
 COMPOSE_PROD_FILE = compose.prod.yaml
 
 
-# Dev 
+# Docker in development environment
+
 ## dev - Starts the development environment in attached mode
 dev:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up --build
@@ -21,6 +22,23 @@ stop:
 logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
 
+.PHONY: dev devd stop logs
+
+
+# Docker for testing "production" environment
+
+## prod - Starts the production environment in attached mode
+prod:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up --build
+
+## prodd - Starts the production environment in detached mode
+prodd:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up -d --build
+
+.PHONY: prod prodd
+
+
+# Checks
 
 ## format - Run formatting
 format:
@@ -37,25 +55,22 @@ sort:
 ## check - Run formatting, linting and sorting imports
 check: lint format sort
 
+.PHONY: format lint sort check
+
+
+# Tests
 
 ## test - Run tests
 test:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest
 
+## testv - Run tests with verbose output and disabled ouptutcapture
+testv:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) exec server uv run pytest -s -vv
 
-# Prod
-
-## prod - Starts the production environment in attached mode
-prod:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up --build
-
-## prodd - Starts the production environment in detached mode
-prodd:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_PROD_FILE) up -d --build
+.PHONY: test testv
 
 
 .PHONY: help
 help: Makefile
 	@sed -n 's/^##//p' $<
-
-.PHONY: dev devd stop logs format lint sort check test prod prodd help
